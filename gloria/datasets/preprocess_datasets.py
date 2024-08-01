@@ -103,18 +103,29 @@ def preprocess_pneumothorax_data(test_fac=0.15):
 
 
 def preprocess_chexpert_5x200_data():
-
+    # Read the original CheXpert training CSV file
     df = pd.read_csv(CHEXPERT_ORIGINAL_TRAIN_CSV)
+    
+    # Fill any missing values in the DataFrame with 0
     df = df.fillna(0)
+    
+    # Filter the DataFrame to include only "Frontal" images
     df = df[df["Frontal/Lateral"] == "Frontal"]
 
-    df_master = pd.read_csv(CHEXPERT_MASTER_CSV)
-    df_master = df_master[["Path", "Report Impression"]]
+    # # Read the CheXpert master CSV file
+    # df_master = pd.read_csv(CHEXPERT_MASTER_CSV)
+    
+    # # Keep only the columns "Path" and "Report Impression" from the master DataFrame
+    # df_master = df_master[["Path", "Report Impression"]]
+
 
     task_dfs = []
     for i, t in enumerate(CHEXPERT_COMPETITION_TASKS):
+        # Create an index array with 1 in the i-th position and 0 elsewhere
         index = np.zeros(14)
         index[i] = 1
+        
+        # Filter the original DataFrame to select rows corresponding to the current task
         df_task = df[
             (df["Atelectasis"] == index[0])
             & (df["Cardiomegaly"] == index[1])
@@ -130,18 +141,23 @@ def preprocess_chexpert_5x200_data():
             & (df["Fracture"] == index[12])
             & (df["Support Devices"] == index[13])
         ]
+        
+        # Randomly sample 200 rows from the filtered DataFrame for the current task
         df_task = df_task.sample(n=200)
         task_dfs.append(df_task)
+    
+    # Concatenate all the task DataFrames into a single DataFrame
     df_200 = pd.concat(task_dfs)
 
-    # get reports
-    df_200 = pd.merge(df_200, df_master, how="left", left_on="Path", right_on="Path")
+    # Merge the selected samples with the master DataFrame to get report impressions
+    # df_200 = pd.merge(df_200, df_master, how="left", left_on="Path", right_on="Path")
 
     return df_200
 
 
 def preprocess_chexpert_data():
 
+    # Read original CheXpert training csv file
     try:
         df = pd.read_csv(CHEXPERT_ORIGINAL_TRAIN_CSV)
     except:
@@ -149,11 +165,18 @@ def preprocess_chexpert_data():
             "Please make sure the the Pneunotrhoax dataset is \
             stored at {PNEUMOTHORAX_DATA_DIR}"
         )
-
+        
+    # preprocess the 5x200 dataset
     df_200 = preprocess_chexpert_5x200_data()
+    
+    # exclude the 5x200 dataset from the original dataset
     df = df[~df[CHEXPERT_PATH_COL].isin(df_200[CHEXPERT_PATH_COL])]
+        
+    # Randomly select samples for validation set
     valid_ids = np.random.choice(len(df), size=CHEXPERT_VALID_NUM, replace=False)
     valid_df = df.iloc[valid_ids]
+    
+    # The rest of the samples are for training
     train_df = df.drop(valid_ids, errors="ignore")
 
     print(f"Number of train samples: {len(train_df)}")

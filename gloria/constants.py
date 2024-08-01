@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # CheXpert constants
-CHEXPERT_DATA_DIR = Path("/home/mars/git/embeddingx_v2/data/chexpert/CheXpert-v1.0")
+CHEXPERT_DATA_DIR = Path("/data/ssd_2/data/chexpert/CheXpert-v1.0")
 CHEXPERT_ORIGINAL_TRAIN_CSV = CHEXPERT_DATA_DIR / "train.csv"
 CHEXPERT_TRAIN_CSV = CHEXPERT_DATA_DIR / "train_split.csv"  # train split from train.csv
 CHEXPERT_VALID_CSV = CHEXPERT_DATA_DIR / "valid_split.csv"  # valid split from train.csv
@@ -13,16 +13,16 @@ CHEXPERT_MASTER_CSV = (
 )  # contains patient information, not PHI conplient
 CHEXPERT_TRAIN_DIR = CHEXPERT_DATA_DIR / "train"
 CHEXPERT_TEST_DIR = CHEXPERT_DATA_DIR / "valid"
-CHEXPERT_5x200 = CHEXPERT_DATA_DIR / "chexpert_8x200.csv"
+CHEXPERT_5x200 = CHEXPERT_DATA_DIR / "chexpert_5x200.csv"
 
 CHEXPERT_VALID_NUM = 5000
 CHEXPERT_VIEW_COL = "Frontal/Lateral"
 CHEXPERT_PATH_COL = "Path"
-CHEXPERT_SPLIT_COL = "Split"
+CHEXPERT_SPLIT_COL = "Split"-d 
 CHEXPERT_REPORT_COL = "Report Impression"
 
 CHEXPERT_TASKS = [
-    "No Finding",
+    "No Findicdng",
     "Enlarged Cardiomediastinum",
     "Cardiomegaly",
     "Lung Lesion",
@@ -37,6 +37,7 @@ CHEXPERT_TASKS = [
     "Fracture",
     "Support Devices",
 ]
+
 CHEXPERT_COMPETITION_TASKS = [
     "Atelectasis",
     "Cardiomegaly",
